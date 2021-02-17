@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { dbConnection } = require('../database/config');
 
 class Server {
     constructor(){
@@ -8,6 +9,9 @@ class Server {
         this.paymentPath = '/api/payment';
         this.userPath = '/api/user';
         this.shopPath = '/api/shop';
+
+        // Connection to DB
+        this.connectionDB();
 
         // Middlewares
         this.middlewares();
@@ -37,6 +41,10 @@ class Server {
 
         //Public
         this.app.use(express.static('public'));
+    }
+
+    async connectionDB(){
+        await dbConnection();
     }
 }
 

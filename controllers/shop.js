@@ -1,48 +1,77 @@
 const { response } = require('express');
+const Shop = require('../models/shop');
 
-const getAll = (req, res = response) => {
-    res.json({
-         msg: 'getAll shops' 
-    });
+const getAll = async(req, res = response) => {
+    try{
+        const shops = await Shop.find();
+
+        return res.json({
+            shops
+        });
+    }catch(err){
+        console.log(err);
+        throw res.status(500).json({
+            msg: ` Error, no se ha podido acceder a los datos de las tiendas. `
+        });
+    }
 }
 
-const get = (req, res = response) => {
+const get = async(req, res = response) => {
+    const id = req.params.id;
+   
+    try{
+        const shop = await Shop.findById(id);
+        return res.json({
+            shop
+        });
+    }catch(err){
+        console.log(err);
+        throw res.status(404).json({
+            msg: `La tienda con id ${id} no existe en la base de datos. `
+        });
+    }
+}
+
+const add = async(req, res = response) => {
+    const { name }  = req.body;
+    
+    try{
+        const shop = new Shop({ name });
+        await shop.save();
+
+        return res.status(201).json({
+            shop
+        });
+    }catch(err){
+        console.log(err);
+        throw res.status(500).json({
+            msg: ` Error interno de la aplicación! `
+        });
+    }
+}
+
+const remove = async(req, res = response) => {
     const id = req.params.id;
 
-    res.json({
-         msg: 'getShop' ,
-         id
-    });
-}
-
-const add = (req, res = response) => {
-    const { name } = req.body;
-
-    if(!name){
-        throw res.status(400).json({
-            msg: "Error, no se encontró 'name' en el cuerpo de la petición!" ,
-       });
+    try{
+        const shop = await Shop.findByIdAndDelete(id);
+        if(shop){
+            return res.json({
+                shop
+            });
+        }
+    }catch(err){
+        console.log(err);
+        
     }
 
-    res.json({
-         msg: 'add Shop' ,
-         name
+    throw res.status(500).json({
+        msg: ` No existe la tienda con id ${id} en la base de datos! `
     });
-}
-
-const remove = (req, res = response) => {
-    const id = req.params.id;
-
-    res.json({
-        msg: 'remove Shop' ,
-        id
-   });
-    
 }
 
 module.exports = {
     getAll,
-    getAll, 
     get, 
     add, 
     remove

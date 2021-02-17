@@ -1,9 +1,21 @@
 const { response } = require('express');
+const User = require('../models/user');
+const Shop = require('../models/shop');
+const Payment = require('../models/payment');
 
-const getAll = (req, res = response) => {
-    res.json({
-         msg: 'getAll - controller' 
-    });
+const getAll = async(req, res = response) => {
+    try{
+        const payments = await Payment.find().populate('user', 'email').populate('shop', 'name');
+
+        return res.json({
+            payments
+        });
+    }catch(err){
+        console.log(err);
+        throw res.status(500).json({
+            msg: ` Error, no se ha podido acceder a los datos de creditos. `
+        });
+    }
 }
 
 const getAllForUser = (req, res = response) => {
@@ -26,44 +38,65 @@ const getAllForUserAndShop = (req, res = response) => {
     });
 }
 
-const addCreditsToUser = (req, res = response) => {
-    const { emailUser, shop, credit } = req.body;
-    
-    validationParametersOrBody(emailUser, 'emailUser', res);
-    validationParametersOrBody(shop, 'shop', res);
-    validationParametersOrBody(credit, 'credit', res);
+const addCreditsToUser = async(req, res = response) => {
+    let { emailUser, shop, credit } = req.body;
 
-    res.status(200).json({
-        msg: 'getUserShop shop- controller',
-        emailUser,
-        shop,
-        credit 
-   });
-    
-}
+    const userBd = await User.findOne({email: emailUser});
+    const shopBd = await Shop.findOne({name: shop});
 
-const removeCreditsToUser = (req, res = response) => {
-    const { emailUser, shop, credit } = req.body;
-    
-    validationParametersOrBody(emailUser, 'emailUser', res);
-    validationParametersOrBody(shop, 'shop', res);
-    validationParametersOrBody(credit, 'credit', res);
-
-    res.status(200).json({
-        msg: 'getUserShop shop- controller',
-        emailUser,
-        shop,
-        credit 
-   });
-}
-
-const validationParametersOrBody = (element, elementName, res) => {
-    if(!element){
-        throw res.status(400).json({
-            msg: "Error, no se encontró '"+elementName+"' en el cuerpo de la petición!" ,
-       });
+    if(credit.includes("-")){
+        credit =  Number(credit) * -1;
     }
-} 
+    
+    try{
+        let payment = new Payment({ 
+            credit, 
+            user: userBd._id,
+            shop: shopBd._id
+        }); 
+
+        await payment.save();
+
+        return res.status(201).json({
+            payment
+        });
+    }catch(err){
+         console.log(err);
+        throw res.status(500).json({
+            msg: ` Error interno de la aplicación! `
+        });
+    }
+}
+
+const removeCreditsToUser = async(req, res = response) => {
+    let { emailUser, shop, credit } = req.body;
+
+    const userBd = await User.findOne({email: emailUser});
+    const shopBd = await Shop.findOne({name: shop});
+
+    if(!credit.includes("-")){
+        credit =  Number(credit) * -1;
+    }
+
+    try{
+        let payment = new Payment({ 
+            credit, 
+            user: userBd._id,
+            shop: shopBd._id
+        }); 
+
+        await payment.save();
+
+        return res.status(201).json({
+            payment
+        });
+    }catch(err){
+         console.log(err);
+        throw res.status(500).json({
+            msg: ` Error interno de la aplicación! `
+        });
+    }
+}
 
 module.exports = {
     getAll,

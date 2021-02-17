@@ -1,47 +1,75 @@
 const { response } = require('express');
+const User = require('../models/user');
 
-const getAll = (req, res = response) => {
-    res.json({
-         msg: 'getAll Users' 
-    });
+const getAll = async(req, res = response) => {
+    try{
+        const users = await User.find();
+
+        return res.json({
+            users
+        });
+    }catch(err){
+        console.log(err);
+        throw res.status(500).json({
+            msg: ` Error, no se ha podido acceder a los datos de usuarios. `
+        });
+    }
 }
 
-const get = (req, res = response) => {
+const get = async(req, res = response) => {
+    const id = req.params.id;
+   
+    try{
+        const user = await User.findById(id);
+        return res.json({
+            user
+        });
+    }catch(err){
+        console.log(err);
+        throw res.status(404).json({
+            msg: `El usuario con id ${id} no existe en la base de datos. `
+        });
+    }
+}
+
+const add = async(req, res = response) => {
+    const { email } = req.body;
+    
+    try{
+        const user = new User({email});
+        await user.save();
+
+        return res.status(201).json({
+            user
+        });
+    }catch(err){
+        console.log(err);
+        throw res.status(500).json({
+            msg: ` Error interno de la aplicación! `
+        });
+    }
+}
+
+const remove = async(req, res = response) => {
     const id = req.params.id;
 
-    res.json({
-         msg: 'get User' ,
-         id
-    });
-}
-
-const add = (req, res = response) => {
-    const { email } = req.body;
-
-    if(!email){
-        throw res.status(400).json({
-            msg: "Error, no se encontró 'email' en el cuerpo de la petición!" ,
-       });
+    try{
+        const user = await User.findByIdAndDelete(id);
+        if(user){
+            return res.json({
+                user
+            });
+        }
+    }catch(err){
+        console.log(err);
     }
 
-    res.json({
-         msg: 'add User' ,
-         email
+    throw res.status(500).json({
+        msg: ` No existe el usuario con id ${id} en la base de datos! `
     });
-}
-
-const remove = (req, res = response) => {
-    const id = req.params.id;
-
-    res.json({
-        msg: 'remove User' ,
-        id
-   });
-    
 }
 
 module.exports = {
-    getAll,
     getAll, 
     get, 
     add, 
