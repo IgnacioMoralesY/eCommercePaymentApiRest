@@ -1,8 +1,11 @@
 # Aplicación NodeJS eCommerce Payments
 
 ```
-- Ejecutar la aplicacion con: npm start
-
+- Al clonar el repositorio hacer los siguientes pasos (se ejecutara en el puerto 8080, asegurece de que no tiene otras aplicaciones corriendo en ese puerto):
+    cd eCommercePaymentApiRest
+    npm install
+    npm start  
+    
 EndPoints:
     Payments:
         GET  /api/payment                  -> Retorna lista con todos los clientes con sus respectivos creditos por tienda en un array.
