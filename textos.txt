@@ -1,1 +1,0 @@
-mejora de validaciones para los elementos del body

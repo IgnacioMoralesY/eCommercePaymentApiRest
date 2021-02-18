@@ -68,7 +68,7 @@ const addCreditsToUser = async(req, res = response) => {
 
     const userBd = await User.findOne({email: emailUser});
     const shopBd = await Shop.findOne({name: shop});
-
+    
     if(credit.includes("-")){
         credit =  Number(credit) * -1;
     }

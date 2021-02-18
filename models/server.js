@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const { dbConnection } = require('../database/config');
+const fileUpload = require('express-fileupload');
+const readFile = require('../jobs/readFile');
 
 class Server {
     constructor(){
@@ -9,6 +11,7 @@ class Server {
         this.paymentPath = '/api/payment';
         this.userPath = '/api/user';
         this.shopPath = '/api/shop';
+        this.uploadPath = '/api/upload';
 
         // Connection to DB
         this.connectionDB();
@@ -18,12 +21,14 @@ class Server {
 
         // Routes
        this.routes();
+
     }
 
     routes(){
         this.app.use(this.paymentPath, require('../routes/payment'));
         this.app.use(this.userPath, require('../routes/user'));
         this.app.use(this.shopPath, require('../routes/shop'));
+        this.app.use(this.uploadPath, require('../routes/upload'));
     }
     
     listen(){
@@ -41,6 +46,12 @@ class Server {
 
         //Public
         this.app.use(express.static('public'));
+
+        // FileUpload
+        this.app.use(fileUpload({
+            useTempFiles: true,
+            tempFileDir: '/tmp/'
+        }));
     }
 
     async connectionDB(){

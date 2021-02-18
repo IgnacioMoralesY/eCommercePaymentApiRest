@@ -1,6 +1,8 @@
-# Aplicacion NodeJS eCommerce Payments
+# Aplicación NodeJS eCommerce Payments
 
 ```
+- Ejecutar la aplicacion con: npm start
+
 EndPoints:
     Payments:
         GET  /api/payment                  -> Retorna lista con todos los clientes con sus respectivos creditos por tienda en un array.
@@ -20,6 +22,23 @@ EndPoints:
         GET     /api/shop/:id     -> Retorna objeto con una tienda.
         POST    /api/shop/        -> Recibe como body: {name}. Crea y Retorna un objeto con la nueva tienda.
         DELETE  /api/shop/:id     -> Elimina y retorna un objeto con la tienda eliminada.
+
+    Upload File 
+        POST    /api/upload   -> Recibe como body: {filecsv} de tipo 'File.csv'. Retorna mensaje de exito o error
+
+Node Cron
+    Se ejecuta un proceso interno del servidor, todos los dias a las 00:00.
+    Proceso se encarga de buscar archivos.csv en una ruta, si encuentra archivos guarda su informacion, agregando o descontando creditos para los usuarios.
+
+    Consideraciones:
+        Usuario y Shop deben existir en la base de datos.
+        Existe una carpeta llamada exampleFileToUpload, la cual, contiene un archivo.csv de ejemplo.
+        Luego de cargar el archivo este se eliminará, para evitar volver a cargarlo cuando se ejecute nuevamente el cron.
+    
+    Formato del archivo .csv
+        index;shop;emailUser;credit
+        1;Nike;prueba@prueba.com;500000
+        2;Adidas;prueba@prueba.com;1999
 
 ```
 
