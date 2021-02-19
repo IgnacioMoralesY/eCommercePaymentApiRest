@@ -1,5 +1,6 @@
 const { response } = require('express');
 const User = require('../models/user');
+const Payment = require('../models/payment');
 
 const getAll = async(req, res = response) => {
     try{
@@ -17,17 +18,17 @@ const getAll = async(req, res = response) => {
 }
 
 const get = async(req, res = response) => {
-    const id = req.params.id;
+    const email = req.params.email;
    
     try{
-        const user = await User.findById(id);
+        const user = await User.findOne({email});
         return res.json({
             user
         });
     }catch(err){
         console.log(err);
-        throw res.status(404).json({
-            msg: `El usuario con id ${id} no existe en la base de datos. `
+        throw res.status(500).json({
+            msg: ` Error interno de la aplicación! `
         });
     }
 }
@@ -51,22 +52,26 @@ const add = async(req, res = response) => {
 }
 
 const remove = async(req, res = response) => {
-    const id = req.params.id;
+    const email = req.params.email;
 
     try{
-        const user = await User.findByIdAndDelete(id);
+        const user = await User.findOne({email});
+        
+        await User.deleteOne({email});
+        await Payment.deleteMany({user: user._id});
+        
         if(user){
             return res.json({
                 user
             });
         }
+
     }catch(err){
         console.log(err);
+        throw res.status(500).json({
+            msg: ` Error interno de la aplicación! `
+        });
     }
-
-    throw res.status(500).json({
-        msg: ` No existe el usuario con id ${id} en la base de datos! `
-    });
 }
 
 module.exports = {

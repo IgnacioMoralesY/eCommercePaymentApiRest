@@ -28,10 +28,14 @@ const getAllForUser = async(req, res = response) => {
     try{
         const payments = await Payment.find({user: userBd._id}).populate('user', 'email').populate('shop', 'name');
 
-        const totalPaymentsPerUser = getListPaymentsForUserAndShopCredits(payments);
+        const totalListPaymentsPerUser = getListPaymentsForUserAndShopCredits(payments);
+        let totalPaymentsPerUser = {};
+        if(totalListPaymentsPerUser.length == 1){
+            totalPaymentsPerUser = totalListPaymentsPerUser[0];
+        }
 
         return res.json({
-            payments: totalPaymentsPerUser
+            payment: totalPaymentsPerUser
         });
     }catch(err){
         console.log(err);
@@ -50,10 +54,27 @@ const getAllForUserAndShop = async(req, res = response) => {
     try{
         const payments = await Payment.find({user: userBd._id, shop: shopBd._id}).populate('user', 'email').populate('shop', 'name');
 
-        const totalPaymentsPerUser = getListPaymentsForUserAndShopCredits(payments);
+        const totalListPaymentsPerUser = getListPaymentsForUserAndShopCredits(payments);
+        let totalPaymentsPerUser = {};
+        
+        if(totalListPaymentsPerUser.length == 1){
+            totalPaymentsPerUser = totalListPaymentsPerUser.reduce((total, payment)=> {
+                if(payment.credits.length == 1){
+                    let paymentUserShop = {
+                        userId: payment.userId,
+                        email: payment.email,
+                        credit: payment.credits[0]
+                    }
+                    
+                    total = paymentUserShop;
+                }
+                
+                return total;
+            },{});
+        }
 
         return res.json({
-            payments: totalPaymentsPerUser
+            payment: totalPaymentsPerUser
         });
     }catch(err){
         console.log(err);
@@ -123,7 +144,7 @@ const removeCreditsToUser = async(req, res = response) => {
     }
 }
 
-const getListPaymentsForUserAndShopCredits = (payments) => {
+const getListPaymentsForUserAndShopCredits = (payments, initialState) => {
     const totalPaymentsPerUser = payments.reduce((totalPayment, payment) => {
         let creditShop = {
             shopId: payment.shop._id,

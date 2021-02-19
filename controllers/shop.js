@@ -1,5 +1,6 @@
 const { response } = require('express');
 const Shop = require('../models/shop');
+const Payment = require('../models/payment');
 
 const getAll = async(req, res = response) => {
     try{
@@ -17,17 +18,17 @@ const getAll = async(req, res = response) => {
 }
 
 const get = async(req, res = response) => {
-    const id = req.params.id;
+    const name = req.params.name;
    
     try{
-        const shop = await Shop.findById(id);
+        const shop = await Shop.findOne({name});
         return res.json({
             shop
         });
     }catch(err){
         console.log(err);
-        throw res.status(404).json({
-            msg: `La tienda con id ${id} no existe en la base de datos. `
+        throw res.status(500).json({
+            msg: ` Error interno de la aplicación! `
         });
     }
 }
@@ -51,23 +52,26 @@ const add = async(req, res = response) => {
 }
 
 const remove = async(req, res = response) => {
-    const id = req.params.id;
+    const name = req.params.name;
 
     try{
-        const shop = await Shop.findByIdAndDelete(id);
+        const shop = await Shop.findOne({name});
+
+        await Shop.deleteOne({name});
+        await Payment.deleteMany({shop: shop._id});
+
         if(shop){
             return res.json({
                 shop
             });
         }
     }catch(err){
-        console.log(err);
-        
+        throw res.status(500).json({
+            msg: ` Error interno de la aplicación! `
+        });
     }
 
-    throw res.status(500).json({
-        msg: ` No existe la tienda con id ${id} en la base de datos! `
-    });
+    
 }
 
 module.exports = {

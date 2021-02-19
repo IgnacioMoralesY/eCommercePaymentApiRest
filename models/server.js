@@ -8,10 +8,10 @@ class Server {
     constructor(){
         this.app = express();
         this.port = process.env.PORT;
-        this.paymentPath = '/api/payment';
-        this.userPath = '/api/user';
-        this.shopPath = '/api/shop';
-        this.uploadPath = '/api/upload';
+        this.paymentPath = process.env.PAYMENT_PATH;
+        this.userPath = process.env.USER_PATH;
+        this.shopPath = process.env.SHOP_PATH;
+        this.uploadPath = process.env.UPLOAD_PATH;
 
         // Connection to DB
         this.connectionDB();

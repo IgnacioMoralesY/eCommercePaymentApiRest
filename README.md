@@ -15,16 +15,16 @@ EndPoints:
         POST /api/payment/remove-credits   -> Recibe como body: {emailUser, shop, credit}. Descuenta creditos y retorna el objeto creado.
 
     Users:
-        GET     /api/user         -> Retorna lista con todos los clientes.
-        GET     /api/user/:id     -> Retorna objeto con un cliente.
-        POST    /api/user         -> Recibe como body: {email}. Crea y Retorna un objeto con el nuevo cliente.
-        DELETE  /api/user/:id     -> Elimina y retorna un objeto con el cliente eliminado.
+        GET     /api/user           -> Retorna lista con todos los clientes.
+        GET     /api/user/:name     -> Retorna objeto con un cliente.
+        POST    /api/user           -> Recibe como body: {email}. Crea y Retorna un objeto con el nuevo cliente.
+        DELETE  /api/user/:name     -> Elimina y retorna un objeto con el cliente eliminado.
 
     Shops:
         GET     /api/shop         -> Retorna lista con todas las tiendas.
-        GET     /api/shop/:id     -> Retorna objeto con una tienda.
+        GET     /api/shop/:name   -> Retorna objeto con una tienda.
         POST    /api/shop/        -> Recibe como body: {name}. Crea y Retorna un objeto con la nueva tienda.
-        DELETE  /api/shop/:id     -> Elimina y retorna un objeto con la tienda eliminada.
+        DELETE  /api/shop/:name   -> Elimina y retorna un objeto con la tienda eliminada.
 
     Upload File 
         POST    /api/upload   -> Recibe como body: {filecsv} de tipo 'File.csv'. Retorna mensaje de exito o error
@@ -42,6 +42,10 @@ Node Cron
         index;shop;emailUser;credit
         1;Nike;prueba@prueba.com;500000
         2;Adidas;prueba@prueba.com;1999
+
+Test con Mocha y Chai
+    Luego de correr la aplicacion con 'npm start' abrir otra terminar y ejecutar el comando 'npm test'
+    el test probara todas las Endpoint, creando registros y luego eliminandolos.
 
 ```
 

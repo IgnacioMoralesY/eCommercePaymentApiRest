@@ -3,7 +3,7 @@ const { Schema, model } = require('mongoose');
 const PaymentSchema = Schema({
     credit: {
         type: Number,
-        required: [true, 'credit es obligatorio']
+        required: true
     },
     user: {
         type: Schema.Types.ObjectId,
