@@ -44,8 +44,8 @@ Node Cron
         2;Adidas;prueba@prueba.com;1999
 
 Test con Mocha y Chai
-    Luego de correr la aplicacion con 'npm start' abrir otra terminar y ejecutar el comando 'npm test'
-    el test probara todas las Endpoint, creando registros y luego eliminandolos.
+    Luego de correr la aplicacion con 'npm start' abrir otra terminal y ejecutar el comando 'npm test'
+    el test probara todas las Endpoint, creando registros y luego los eliminara.
 
 ```
 
