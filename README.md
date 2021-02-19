@@ -16,15 +16,15 @@ EndPoints:
 
     Users:
         GET     /api/user           -> Retorna lista con todos los clientes.
-        GET     /api/user/:name     -> Retorna objeto con un cliente.
+        GET     /api/user/:email    -> Retorna objeto con un cliente.
         POST    /api/user           -> Recibe como body: {email}. Crea y Retorna un objeto con el nuevo cliente.
-        DELETE  /api/user/:name     -> Elimina y retorna un objeto con el cliente eliminado.
+        DELETE  /api/user/:email    -> Elimina y retorna un objeto con el cliente eliminado.
 
     Shops:
-        GET     /api/shop          -> Retorna lista con todas las tiendas.
-        GET     /api/shop/:email   -> Retorna objeto con una tienda.
-        POST    /api/shop/         -> Recibe como body: {name}. Crea y Retorna un objeto con la nueva tienda.
-        DELETE  /api/shop/:email   -> Elimina y retorna un objeto con la tienda eliminada.
+        GET     /api/shop         -> Retorna lista con todas las tiendas.
+        GET     /api/shop/:name   -> Retorna objeto con una tienda.
+        POST    /api/shop/        -> Recibe como body: {name}. Crea y Retorna un objeto con la nueva tienda.
+        DELETE  /api/shop/:name   -> Elimina y retorna un objeto con la tienda eliminada.
 
     Upload File 
         POST    /api/upload   -> Recibe como body: {filecsv} de tipo 'File.csv'. Retorna mensaje de exito o error
