@@ -16,9 +16,9 @@ EndPoints:
 
     Users:
         GET     /api/user           -> Retorna lista con todos los clientes.
-        GET     /api/user/:name     -> Retorna objeto con un cliente.
+        GET     /api/user/:email    -> Retorna objeto con un cliente.
         POST    /api/user           -> Recibe como body: {email}. Crea y Retorna un objeto con el nuevo cliente.
-        DELETE  /api/user/:name     -> Elimina y retorna un objeto con el cliente eliminado.
+        DELETE  /api/user/:email    -> Elimina y retorna un objeto con el cliente eliminado.
 
     Shops:
         GET     /api/shop         -> Retorna lista con todas las tiendas.
@@ -44,8 +44,8 @@ Node Cron
         2;Adidas;prueba@prueba.com;1999
 
 Test con Mocha y Chai
-    Luego de correr la aplicacion con 'npm start' abrir otra terminar y ejecutar el comando 'npm test'
-    el test probara todas las Endpoint, creando registros y luego eliminandolos.
+    Luego de correr la aplicacion con 'npm start' abrir otra terminal y ejecutar el comando 'npm test'
+    el test probara todas las Endpoint, creando registros y luego los eliminara.
 
 ```
 

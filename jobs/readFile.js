@@ -13,28 +13,29 @@ const readFile = cron.schedule('0 0 * * *', () => {
         }
 
         if(files.length > 0){
-
             files.forEach(nameFiles => {
-                let path =  './files/'+ nameFiles;
+                if(nameFiles.toLowerCase().includes('.csv')){
+                    let path =  './files/'+ nameFiles;
 
-                fs.createReadStream(path)
-                .pipe(csv({separator: ';'}))
-                .on('data', async(data, error) => { 
-                    if(error){
-                        console.log(error);
-                        return;
-                    }
-                   const payment = await savePayment(data);
-                   return payment;
-                })
-                .on('end', (error) => {
-                    if(error){
-                        console.log(error);
-                        return;
-                    }
-                    console.log('Se completo la lectura de un archivo!');
-                    deleteFile(path);
-                });
+                    fs.createReadStream(path)
+                    .pipe(csv({separator: ';'}))
+                    .on('data', async(data, error) => { 
+                        if(error){
+                            console.log(error);
+                            return;
+                        }
+                    const payment = await savePayment(data);
+                    return payment;
+                    })
+                    .on('end', (error) => {
+                        if(error){
+                            console.log(error);
+                            return;
+                        }
+                        console.log('Se completo la lectura de un archivo!');
+                        deleteFile(path);
+                    });
+                }
             });      
         }
     });
@@ -49,13 +50,13 @@ const deleteFile = (path) => {
     })
 }
 
-const savePayment = async(payment) => {
-    let { emailUser, shop, credit } = payment;
-
-    const userBd = await User.findOne({email: emailUser});
-    const shopBd = await Shop.findOne({name: shop});
+const savePayment = async(paymentParameter) => {
 
     try{
+        let { emailUser, shop, credit } = paymentParameter;
+
+        const userBd = await User.findOne({email: emailUser});
+        const shopBd = await Shop.findOne({name: shop});
         credit =  Number(credit);
 
         let payment = new Payment({ 
